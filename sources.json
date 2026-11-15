@@ -1,11 +1,11 @@
 {
   "sources": [
     {
-      "repository": "nieaowei/gl-sdk4-ui-momo",
+      "repository": "nieaowei/gl-ui-momo",
       "mode": "release",
       "release": "latest",
       "assets": [
-        "gl-sdk4-ui-momo-*.apk"
+        "gl-ui-momo-*.apk"
       ],
       "series": "25.12",
       "architectures": [

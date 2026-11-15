@@ -2,8 +2,8 @@
 
 Signed OpenWrt 25.12+ APK feed, built from **prebuilt APKs on independent plugin repositories' GitHub Releases**, hosted by GitHub Pages.
 
-- **Source package:** [nieaowei/gl-sdk4-ui-momo](https://github.com/nieaowei/gl-sdk4-ui-momo)
-- **Source release:** [gl-sdk4-ui-momo/releases/latest](https://github.com/nieaowei/gl-sdk4-ui-momo/releases/latest)
+- **Source package:** [nieaowei/gl-ui-momo](https://github.com/nieaowei/gl-ui-momo)
+- **Source release:** [gl-ui-momo/releases/latest](https://github.com/nieaowei/gl-ui-momo/releases/latest)
 - **Central feed:** [nieaowei/openwrt-packages](https://github.com/nieaowei/openwrt-packages)
 - **Build configuration:** [build branch](https://github.com/nieaowei/openwrt-packages/tree/build)
 - **Published APKs and indexes:** [main branch](https://github.com/nieaowei/openwrt-packages/tree/main)
@@ -12,7 +12,7 @@ Signed OpenWrt 25.12+ APK feed, built from **prebuilt APKs on independent plugin
 ## Independent build architecture
 
 ```text
-gl-sdk4-ui-momo (and other standalone plugin repositories)
+gl-ui-momo (and other standalone plugin repositories)
   └── GitHub Actions: test -> build *.apk -> sha256 -> GitHub Release
                                     |
 openwrt-packages (NO source builds)  |
@@ -43,10 +43,10 @@ Add a new entry to [sources.json](sources.json), e.g.:
 
 ```json
 {
-  "repository": "nieaowei/gl-sdk4-ui-momo",
+  "repository": "nieaowei/gl-ui-momo",
   "mode": "release",
   "release": "latest",
-  "assets": ["gl-sdk4-ui-momo-*.apk"],
+  "assets": ["gl-ui-momo-*.apk"],
   "series": "25.12",
   "architectures": ["aarch64_cortex-a53"]
 }
@@ -97,10 +97,12 @@ wget -O /etc/apk/keys/nieaowei.pem \
 echo "https://nieaowei.github.io/openwrt-packages/25.12/packages/$arch/packages.adb" \
   > /etc/apk/repositories.d/nieaowei.list
 apk update
-apk add gl-sdk4-ui-momo
+apk add gl-ui-momo
 ```
 
 Do not use this feed with a different architecture or an incompatible GL.iNet SDK4 firmware. Keep the original dependency feeds enabled and do not blindly `apk upgrade` the entire system.
+
+The Momo UI package is named `gl-ui-momo`; the source repository is `nieaowei/gl-ui-momo`. If the old `gl-sdk4-ui-momo` package is installed, remove it over SSH with `apk del gl-sdk4-ui-momo` before installing the new package because both own the same UI files. GL's native package page blocks uninstalling names containing `gl-sdk`; the new package name avoids that restriction.
 
 ## Verification and traceability
 
