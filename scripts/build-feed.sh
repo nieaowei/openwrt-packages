@@ -26,7 +26,7 @@ while IFS= read -r -d '' source; do
   arch="$(printf '%s' "$rel" | cut -d/ -f2)"
   filename="$(printf '%s' "$rel" | cut -d/ -f3)"
 
-  if [[ "$rel" != "$series/$arch/$filename" ]] || [[ ! "$series" =~ ^[0-9]+\.[0-9]+$ ]] || [[ ! "$arch" =~ ^[A-Za-z0-9_]+$ ]]; then
+  if [[ "$rel" != "$series/$arch/$filename" ]] || [[ ! "$series" =~ ^[0-9]+\.[0-9]+$ ]] || [[ ! "$arch" =~ ^[A-Za-z0-9_-]+$ ]]; then
     echo "Invalid package path: $source (expected packages/<series>/<arch>/<file>.apk)" >&2
     exit 1
   fi
