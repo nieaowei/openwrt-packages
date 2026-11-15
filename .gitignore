@@ -1,6 +1,0 @@
-# Never commit signing credentials
-private-key.pem
-**/private-key.pem
-*.key
-# Generated feed output
-site/
