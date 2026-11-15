@@ -7,7 +7,11 @@ set -euo pipefail
 : "${SITE_DIR:?Set SITE_DIR to the output directory}"
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
-input="$root/packages"
+input="${PACKAGES_DIR:-$root/packages}"
+if [ ! -d "$input" ]; then
+  echo "Package input directory does not exist: $input" >&2
+  exit 1
+fi
 mkdir -p "$SITE_DIR"
 site="$(cd "$SITE_DIR" && pwd)"
 keys="$site/.keys"
@@ -54,7 +58,7 @@ while IFS= read -r -d '' source; do
 done < <(find "$input" -type f -name '*.apk' -print0 | sort -z)
 
 if (( total == 0 )); then
-  echo "No APKs in packages/<series>/<arch>/; nothing to publish" >&2
+  echo "No APKs in $input/<series>/<arch>/; nothing to publish" >&2
   exit 1
 fi
 
