@@ -1,0 +1,81 @@
+name: Publish OpenWrt APK feed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/**/*.apk'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: apk-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SDK extraction dependency
+        run: sudo apt-get update && sudo apt-get install -y zstd
+
+      - name: Download verified OpenWrt SDK (host apk-tools v3)
+        shell: bash
+        env:
+          SDK_VERSION: '25.12.6'
+          SDK_TARGET: 'mediatek/filogic'
+        run: |
+          set -euo pipefail
+          base="https://downloads.openwrt.org/releases/$SDK_VERSION/targets/$SDK_TARGET"
+          curl --fail --location --retry 3 --silent --show-error "$base/sha256sums" -o "$RUNNER_TEMP/sha256sums"
+          sdk="$(awk '{ print $2 }' "$RUNNER_TEMP/sha256sums" | sed 's/^\*//' | grep -E '^openwrt-sdk-.*\.tar\.zst$' | head -n 1)"
+          if [ -z "$sdk" ]; then
+            echo "::error::No matching OpenWrt SDK archive in $base"
+            exit 1
+          fi
+          curl --fail --location --retry 3 --silent --show-error "$base/$sdk" -o "$RUNNER_TEMP/$sdk"
+          (
+            cd "$RUNNER_TEMP"
+            awk -v n="$sdk" '{ f=$2; sub(/^\*/, "", f); if (f == n) print }' sha256sums | sha256sum --check
+          )
+          mkdir -p "$RUNNER_TEMP/sdk"
+          tar --zstd -xf "$RUNNER_TEMP/$sdk" -C "$RUNNER_TEMP/sdk" --strip-components=1
+          test -x "$RUNNER_TEMP/sdk/staging_dir/host/bin/apk"
+          echo "APK_BIN=$RUNNER_TEMP/sdk/staging_dir/host/bin/apk" >> "$GITHUB_ENV"
+
+      - name: Build signed package feed
+        shell: bash
+        env:
+          APK_SIGNING_PRIVATE_KEY: ${{ secrets.APK_SIGNING_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$APK_SIGNING_PRIVATE_KEY" ]; then
+            echo "::error::Configure the APK_SIGNING_PRIVATE_KEY Actions repository secret first"
+            exit 1
+          fi
+          key="$RUNNER_TEMP/apk-private-key.pem"
+          ( umask 077; printf '%s\n' "$APK_SIGNING_PRIVATE_KEY" > "$key" )
+          SIGNING_KEY="$key" SITE_DIR="$GITHUB_WORKSPACE/site" bash scripts/build-feed.sh
+          rm -f "$key"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
