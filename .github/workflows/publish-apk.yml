@@ -4,8 +4,16 @@ on:
   push:
     branches: [main]
     paths:
+      - 'sources.json'
+      - 'scripts/**'
       - 'packages/**/*.apk'
+      - '.github/workflows/publish-apk.yml'
   workflow_dispatch:
+  repository_dispatch:
+    types: [source-updated]
+  schedule:
+    # Check standalone source repositories every 6 hours (UTC).
+    - cron: '17 1,7,13,19 * * *'
 
 permissions:
   contents: read
@@ -13,23 +21,68 @@ permissions:
   id-token: write
 
 concurrency:
-  group: apk-pages
+  group: openwrt-apk-pages
   cancel-in-progress: false
 
 jobs:
-  publish:
+  collect:
+    # Source repositories and their build scripts run without the feed signing secret.
+    name: Build packages from independent repositories
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout feed repository
+        uses: actions/checkout@v4
+
+      - name: Copy manually checked-in APKs
+        shell: bash
+        run: |
+          mkdir -p collected/packages
+          cp -a packages/. collected/packages/
+
+      - name: Build packages from sources.json
+        run: python3 scripts/collect-sources.py "$GITHUB_WORKSPACE/collected/packages"
+
+      - name: Verify collection is nonempty
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! find collected/packages -type f -name '*.apk' -print -quit | grep -q .; then
+            echo "::error::No APKs were collected"
+            exit 1
+          fi
+          find collected/packages -type f -name '*.apk' -print | sort
+
+      - name: Upload collected APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: collected-openwrt-apks
+          path: collected
+          if-no-files-found: error
+          retention-days: 2
+
+  publish:
+    name: Sign APKs and deploy feed to Pages
+    needs: [collect]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout feed scripts
         uses: actions/checkout@v4
+
+      - name: Download collected APKs
+        uses: actions/download-artifact@v4
+        with:
+          name: collected-openwrt-apks
+          path: collected
 
       - name: Install SDK extraction dependency
         run: sudo apt-get update && sudo apt-get install -y zstd
 
-      - name: Download verified OpenWrt SDK (host apk-tools v3)
+      - name: Download verified OpenWrt SDK for apk-tools v3
         shell: bash
         env:
           SDK_VERSION: '25.12.6'
@@ -40,7 +93,7 @@ jobs:
           curl --fail --location --retry 3 --silent --show-error "$base/sha256sums" -o "$RUNNER_TEMP/sha256sums"
           sdk="$(awk '{ print $2 }' "$RUNNER_TEMP/sha256sums" | sed 's/^\*//' | grep -E '^openwrt-sdk-.*\.tar\.zst$' | head -n 1)"
           if [ -z "$sdk" ]; then
-            echo "::error::No matching OpenWrt SDK archive in $base"
+            echo "::error::No OpenWrt SDK archive in $base"
             exit 1
           fi
           curl --fail --location --retry 3 --silent --show-error "$base/$sdk" -o "$RUNNER_TEMP/$sdk"
@@ -53,22 +106,24 @@ jobs:
           test -x "$RUNNER_TEMP/sdk/staging_dir/host/bin/apk"
           echo "APK_BIN=$RUNNER_TEMP/sdk/staging_dir/host/bin/apk" >> "$GITHUB_ENV"
 
-      - name: Build signed package feed
+      - name: Sign packages and generate signed indexes
         shell: bash
         env:
           APK_SIGNING_PRIVATE_KEY: ${{ secrets.APK_SIGNING_PRIVATE_KEY }}
         run: |
           set -euo pipefail
           if [ -z "$APK_SIGNING_PRIVATE_KEY" ]; then
-            echo "::error::Configure the APK_SIGNING_PRIVATE_KEY Actions repository secret first"
+            echo "::error::Configure the APK_SIGNING_PRIVATE_KEY Actions secret first"
             exit 1
           fi
           key="$RUNNER_TEMP/apk-private-key.pem"
-          ( umask 077; printf '%s\n' "$APK_SIGNING_PRIVATE_KEY" > "$key" )
-          SIGNING_KEY="$key" SITE_DIR="$GITHUB_WORKSPACE/site" bash scripts/build-feed.sh
+          (umask 077; printf '%s\n' "$APK_SIGNING_PRIVATE_KEY" > "$key")
+          PACKAGES_DIR="$GITHUB_WORKSPACE/collected/packages" \
+          SIGNING_KEY="$key" SITE_DIR="$GITHUB_WORKSPACE/site" \
+          bash scripts/build-feed.sh
           rm -f "$key"
 
-      - name: Configure Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
@@ -76,6 +131,6 @@ jobs:
         with:
           path: site
 
-      - name: Deploy Pages
+      - name: Deploy to Pages
         id: deploy
         uses: actions/deploy-pages@v4
