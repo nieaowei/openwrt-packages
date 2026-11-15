@@ -2,15 +2,15 @@
   "packages": [
     {
       "repository": "nieaowei/gl-ui-momo",
-      "release": "v2026.10.14-r1+738e5c9",
-      "release_url": "https://github.com/nieaowei/gl-ui-momo/releases/tag/v2026.10.14-r1%2B738e5c9",
-      "package": "gl-ui-momo-2026.10.14-738e5c9-r1.apk",
-      "sha256": "246cc37d044f6cc14b7e8e8a00e1f4dbbc9a42e9d94647ad551b55cf0c4a3410",
+      "release": "v2026.10.14-r1+dc8ea1e",
+      "release_url": "https://github.com/nieaowei/gl-ui-momo/releases/tag/v2026.10.14-r1%2Bdc8ea1e",
+      "package": "gl-ui-momo-2026.10.14-dc8ea1e-r1.apk",
+      "sha256": "cc1eb9c82e0e7460e44a61e1a26dbcb55c3ad844f3cf3554116bd581bd2f2c21",
       "series": "25.12",
       "architectures": [
         "aarch64_cortex-a53"
       ],
-      "source_commit": "738e5c97fb3bb281985da858a2f1199974fbd3f6"
+      "source_commit": "dc8ea1e848cd3fef7db7cb5920e1428f52854bee"
     }
   ]
 }
