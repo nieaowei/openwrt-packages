@@ -2,12 +2,15 @@
   "sources": [
     {
       "repository": "nieaowei/gl-sdk4-ui-momo",
-      "ref": "main",
-      "mode": "build",
-      "script": "scripts/build-apk.sh",
-      "artifact_glob": "dist/*.apk",
+      "mode": "release",
+      "release": "latest",
+      "assets": [
+        "gl-sdk4-ui-momo-*.apk"
+      ],
       "series": "25.12",
-      "architectures": ["aarch64_cortex-a53"]
+      "architectures": [
+        "aarch64_cortex-a53"
+      ]
     }
   ]
 }
