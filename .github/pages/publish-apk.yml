@@ -1,0 +1,27 @@
+# Installed as .github/workflows/publish-apk.yml on main.
+# Keep this dispatcher on the default branch so schedules continue to run.
+name: Publish OpenWrt APK feed
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [source-updated]
+  schedule:
+    - cron: '17 1,7,13,19 * * *'
+
+permissions:
+  actions: write
+
+jobs:
+  dispatch:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Run feed publisher on build branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST \
+            "repos/$GITHUB_REPOSITORY/actions/workflows/publish-apk.yml/dispatches" \
+            -f ref=build

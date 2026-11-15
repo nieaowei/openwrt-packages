@@ -2,18 +2,13 @@ name: Publish OpenWrt APK feed
 
 on:
   push:
-    branches: [main]
+    branches: [build]
     paths:
       - 'sources.json'
       - 'scripts/**'
       - 'packages/**/*.apk'
       - '.github/workflows/publish-apk.yml'
   workflow_dispatch:
-  repository_dispatch:
-    types: [source-updated]
-  schedule:
-    # Check standalone source repositories every 6 hours (UTC).
-    - cron: '17 1,7,13,19 * * *'
 
 permissions:
   contents: read
@@ -24,6 +19,7 @@ concurrency:
 
 jobs:
   collect:
+    if: github.ref == 'refs/heads/build'
     # Only download verified GitHub Release assets; never execute or build source code here.
     name: Collect prebuilt APKs from GitHub Releases
     runs-on: ubuntu-24.04
@@ -64,20 +60,18 @@ jobs:
           retention-days: 2
 
   publish:
-    name: Sign APKs and deploy feed to Pages
+    name: Sign APKs and publish feed to main
     needs: [collect]
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     permissions:
-      contents: read
+      contents: write
       pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Checkout feed scripts
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Download collected APKs
         uses: actions/download-artifact@v4
@@ -130,14 +124,33 @@ jobs:
           cp "$GITHUB_WORKSPACE/collected/source-provenance.json" "$GITHUB_WORKSPACE/site/sources.json"
           rm -f "$key"
 
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Checkout current published branch
+        uses: actions/checkout@v4
         with:
-          path: site
+          ref: main
+          path: published
 
-      - name: Deploy to Pages
-        id: deploy
-        uses: actions/deploy-pages@v4
+      - name: Commit signed feed to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f site/index.html
+          test -f site/.nojekyll
+          test -f published/.github/workflows/publish-apk.yml
+          # Keep main's scheduler and Git metadata; replace only the feed contents.
+          rsync -a --delete --exclude='/.git/' --exclude='/.github/' site/ published/
+          cd published
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore: sync signed OpenWrt APK feed'
+            git push origin HEAD:refs/heads/main
+          fi
+
+      - name: Request Pages build from main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # GITHUB_TOKEN pushes do not trigger Pages automatically.
+          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
