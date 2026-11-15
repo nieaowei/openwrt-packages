@@ -24,8 +24,8 @@ concurrency:
 
 jobs:
   collect:
-    # Source repositories and their build scripts run without the feed signing secret.
-    name: Build packages from independent repositories
+    # Only download verified GitHub Release assets; never execute or build source code here.
+    name: Collect prebuilt APKs from GitHub Releases
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
@@ -42,8 +42,8 @@ jobs:
           mkdir -p collected/packages
           cp -a packages/. collected/packages/
 
-      - name: Build packages from sources.json
-        run: python3 scripts/collect-sources.py "$GITHUB_WORKSPACE/collected/packages"
+      - name: Download release APKs and check SHA256
+        run: python3 scripts/collect-releases.py "$GITHUB_WORKSPACE/collected/packages"
 
       - name: Verify collection is nonempty
         shell: bash
@@ -127,6 +127,7 @@ jobs:
           PACKAGES_DIR="$GITHUB_WORKSPACE/collected/packages" \
           SIGNING_KEY="$key" SITE_DIR="$GITHUB_WORKSPACE/site" \
           bash scripts/build-feed.sh
+          cp "$GITHUB_WORKSPACE/collected/source-provenance.json" "$GITHUB_WORKSPACE/site/sources.json"
           rm -f "$key"
 
       - name: Configure GitHub Pages
