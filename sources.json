@@ -9,8 +9,7 @@
       ],
       "series": "25.12",
       "architectures": [
-        "noarch",
-        "aarch64_cortex-a53"
+        "noarch"      
       ]
     }
   ]
