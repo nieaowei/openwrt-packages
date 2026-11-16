@@ -138,7 +138,8 @@ jobs:
           test -f site/.nojekyll
           test -f published/.github/workflows/publish-apk.yml
           # Keep main's scheduler and Git metadata; replace only the feed contents.
-          rsync -a --delete --exclude='/.git/' --exclude='/.github/' site/ published/
+          # Generated metadata and freshly checked-out files can share size and mtime.
+          rsync -a --checksum --delete --exclude='/.git/' --exclude='/.github/' site/ published/
           cd published
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
