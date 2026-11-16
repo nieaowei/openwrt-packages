@@ -8,8 +8,7 @@
       "sha256": "026e76fd20e605afa9fca33c251eb83b918dfe8efd42d90ea3b8c74790e6cb4d",
       "series": "25.12",
       "architectures": [
-        "noarch",
-        "aarch64_cortex-a53"
+        "noarch"
       ],
       "source_commit": "f32bdb7d1ee630b57389bbf8896aeded2e99552c"
     }
