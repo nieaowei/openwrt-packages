@@ -102,7 +102,7 @@ apk add gl-ui-momo
 
 Do not use this feed with a different architecture or an incompatible GL.iNet SDK4 firmware. Keep the original dependency feeds enabled and do not blindly `apk upgrade` the entire system.
 
-The Momo UI package is named `gl-ui-momo`; the source repository is `nieaowei/gl-ui-momo`. If the old `gl-sdk4-ui-momo` package is installed, remove it over SSH with `apk del gl-sdk4-ui-momo` before installing the new package because both own the same UI files. GL's native package page blocks uninstalling names containing `gl-sdk`; the new package name avoids that restriction.
+The Momo UI package is named `gl-ui-momo`; the source repository is `nieaowei/gl-ui-momo`.
 
 ## Verification and traceability
 
