@@ -7,12 +7,14 @@ The central signing job is intentionally separate.
 import fnmatch
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
 import sys
 import time
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -36,6 +38,10 @@ def download(url, max_bytes):
     for attempt in range(3):
         try:
             req = Request(url, headers=HEADERS)
+            token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+            if token and urlsplit(url).scheme == "https" and urlsplit(url).netloc == "api.github.com":
+                # Authenticate API calls only; never forward the token to a download CDN.
+                req.add_unredirected_header("Authorization", "Bearer " + token)
             with urlopen(req, timeout=90) as response:
                 chunks = []
                 size = 0

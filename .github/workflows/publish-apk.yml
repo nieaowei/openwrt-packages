@@ -38,7 +38,12 @@ jobs:
           mkdir -p collected/packages
           cp -a packages/. collected/packages/
 
+      - name: Test release collection
+        run: python3 scripts/test-collect-releases.py
+
       - name: Download release APKs and check SHA256
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python3 scripts/collect-releases.py "$GITHUB_WORKSPACE/collected/packages"
 
       - name: Verify collection is nonempty
