@@ -31,16 +31,21 @@ while IFS= read -r -d '' source; do
     exit 1
   fi
 
-  read -r pkg_name pkg_version < <(
+  read -r pkg_name pkg_version pkg_arch < <(
     "$APK_BIN" --allow-untrusted adbdump "$source" | awk '
       /^info:/ { inside=1; next }
       /^[^ ]/ { inside=0 }
       inside && $1=="name:" { name=$2 }
       inside && $1=="version:" { version=$2 }
-      END { print name, version }'
+      inside && $1=="arch:" { arch=$2 }
+      END { print name, version, arch }'
   )
   if [[ ! "$pkg_name" =~ ^[A-Za-z0-9._+~-]+$ ]] || [[ ! "$pkg_version" =~ ^[A-Za-z0-9._+~-]+$ ]]; then
     echo "Unable to parse safe package name and version from: $source" >&2
+    exit 1
+  fi
+  if [[ "$arch" == noarch && "$pkg_arch" != noarch ]]; then
+    echo "Only noarch packages may be published in the shared feed: $source (arch=$pkg_arch)" >&2
     exit 1
   fi
 

@@ -48,7 +48,7 @@ Add a new entry to [sources.json](sources.json), e.g.:
   "release": "latest",
   "assets": ["gl-ui-momo-*.apk"],
   "series": "25.12",
-  "architectures": ["aarch64_cortex-a53"]
+  "architectures": ["noarch", "aarch64_cortex-a53"]
 }
 ```
 
@@ -56,7 +56,7 @@ Each plugin repo should independently publish a stable GitHub Release with match
 
 Any source-specific build requirements (OpenWrt SDK, Rust, Go, GL.iNet SDK4, and so on) belong in the **plugin repository's Actions**. Never copy the signing private key to plugin repositories.
 
-The current source package is an architecture-independent `noarch` GL.iNet SDK4 UI plugin. It is included in an `aarch64_cortex-a53` feed for the GL-MT3600BE setup; dependencies such as `momo` and `gl-sdk4-ui-core` must already be available from suitable package feeds.
+Architecture-independent packages belong in the shared `noarch` feed. The publisher verifies the APK architecture and rejects architecture-specific packages in this directory. The current `gl-ui-momo` package is published to `noarch` and also kept in `aarch64_cortex-a53` for existing GL-MT3600BE feed configurations. Dependencies such as `momo` and `gl-sdk4-ui-core` must be available from feeds appropriate to the device and firmware.
 
 ## Scheduling and triggers
 
@@ -81,26 +81,27 @@ The collector uses only GitHub public Releases and SHA256 checksums. The checksu
 
 ## Install on OpenWrt 25.12+
 
-Published feed index:
+Shared feed index for architecture-independent packages:
 
 ```text
-https://nieaowei.github.io/openwrt-packages/25.12/packages/aarch64_cortex-a53/packages.adb
+https://nieaowei.github.io/openwrt-packages/25.12/packages/noarch/packages.adb
 ```
 
 On a compatible device:
 
 ```sh
-arch="$(apk --print-arch)"
 mkdir -p /etc/apk/keys /etc/apk/repositories.d
 wget -O /etc/apk/keys/nieaowei.pem \
   https://nieaowei.github.io/openwrt-packages/public-key.pem
-echo "https://nieaowei.github.io/openwrt-packages/25.12/packages/$arch/packages.adb" \
+echo "https://nieaowei.github.io/openwrt-packages/25.12/packages/noarch/packages.adb" \
   > /etc/apk/repositories.d/nieaowei.list
 apk update
 apk add gl-ui-momo
 ```
 
-Do not use this feed with a different architecture or an incompatible GL.iNet SDK4 firmware. Keep the original dependency feeds enabled and do not blindly `apk upgrade` the entire system.
+The `noarch` packages can be used on different CPU architectures when their firmware requirements are met. `gl-ui-momo` requires compatible GL.iNet SDK4 firmware. Keep the original dependency feeds enabled and do not blindly `apk upgrade` the entire system.
+
+The existing `25.12/packages/aarch64_cortex-a53/packages.adb` index remains available; devices already using it do not need to change their configuration.
 
 The Momo UI package is named `gl-ui-momo`; the source repository is `nieaowei/gl-ui-momo`.
 
