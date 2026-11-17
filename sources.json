@@ -11,6 +11,18 @@
       "architectures": [
         "noarch"      
       ]
+    },
+    {
+      "repository": "nieaowei/gl-ui-avahi-daemon",
+      "mode": "release",
+      "release": "latest",
+      "assets": [
+        "gl-ui-avahi-daemon-*.apk"
+      ],
+      "series": "25.12",
+      "architectures": [
+        "noarch"      
+      ]
     }
   ]
 }
