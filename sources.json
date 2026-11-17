@@ -2,27 +2,27 @@
   "packages": [
     {
       "repository": "nieaowei/gl-ui-momo",
-      "release": "v2026.10.14-r1+6500651",
-      "release_url": "https://github.com/nieaowei/gl-ui-momo/releases/tag/v2026.10.14-r1%2B6500651",
-      "package": "gl-ui-momo-2026.10.14-6500651-r1.apk",
-      "sha256": "89214169dfbf91bd4650609f5c596fa9a6bf1bf431cd05dd6c998f4e2286c5b6",
+      "release": "v2026.10.14-r1+78615f2",
+      "release_url": "https://github.com/nieaowei/gl-ui-momo/releases/tag/v2026.10.14-r1%2B78615f2",
+      "package": "gl-ui-momo-2026.10.14-78615f2-r1.apk",
+      "sha256": "45bc6f6e59e6c75a51af4e1b8e6b5fcdbcf1d6ab788b85d8a1459a223732345e",
       "series": "25.12",
       "architectures": [
         "noarch"
       ],
-      "source_commit": "65006515ef87bbe30f9d6a7af77a6e90e237f79e"
+      "source_commit": "78615f2e1b78114090fe963174618ea23be1ebea"
     },
     {
       "repository": "nieaowei/gl-ui-avahi-daemon",
-      "release": "v0.9_rc5-r1+79ffddd",
-      "release_url": "https://github.com/nieaowei/gl-ui-avahi-daemon/releases/tag/v0.9_rc5-r1%2B79ffddd",
-      "package": "gl-ui-avahi-daemon-0.9_rc5-79ffddd-r1.apk",
-      "sha256": "0fc87d47e488d69c50169954bfc7dcb07e8585df40e256997eb649ee7a94effb",
+      "release": "v0.9_rc5-r1+ea5dbd9",
+      "release_url": "https://github.com/nieaowei/gl-ui-avahi-daemon/releases/tag/v0.9_rc5-r1%2Bea5dbd9",
+      "package": "gl-ui-avahi-daemon-0.9_rc5-ea5dbd9-r1.apk",
+      "sha256": "98e53d078abe76afd35fafc93659fa10da7e1a3ea15d2e4477035b379178cf75",
       "series": "25.12",
       "architectures": [
         "noarch"
       ],
-      "source_commit": "79ffddd53c028cc5a1b62cb9eaf7be478f3835c3"
+      "source_commit": "ea5dbd9672c1e5b55524c4a069576590e9fdf892"
     }
   ]
 }
