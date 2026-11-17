@@ -11,6 +11,18 @@
         "noarch"
       ],
       "source_commit": "65006515ef87bbe30f9d6a7af77a6e90e237f79e"
+    },
+    {
+      "repository": "nieaowei/gl-ui-avahi-daemon",
+      "release": "v0.9_rc5-r1+79ffddd",
+      "release_url": "https://github.com/nieaowei/gl-ui-avahi-daemon/releases/tag/v0.9_rc5-r1%2B79ffddd",
+      "package": "gl-ui-avahi-daemon-0.9_rc5-79ffddd-r1.apk",
+      "sha256": "0fc87d47e488d69c50169954bfc7dcb07e8585df40e256997eb649ee7a94effb",
+      "series": "25.12",
+      "architectures": [
+        "noarch"
+      ],
+      "source_commit": "79ffddd53c028cc5a1b62cb9eaf7be478f3835c3"
     }
   ]
 }
