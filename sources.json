@@ -23,6 +23,30 @@
       "architectures": [
         "noarch"      
       ]
+    },
+    {
+      "repository": "nieaowei/udp-discovery-relay",
+      "mode": "release",
+      "release": "latest",
+      "assets": [
+        "udp-discovery-relay-*.apk"
+      ],
+      "series": "25.12",
+      "architectures": [
+        "aarch64_cortex-a53"
+      ]
+    },
+    {
+      "repository": "nieaowei/gl-ui-udp-discovery-relay",
+      "mode": "release",
+      "release": "latest",
+      "assets": [
+        "gl-ui-udp-discovery-relay-*.apk"
+      ],
+      "series": "25.12",
+      "architectures": [
+        "noarch"
+      ]
     }
   ]
 }
