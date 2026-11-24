@@ -2,27 +2,27 @@
   "packages": [
     {
       "repository": "nieaowei/gl-ui-momo",
-      "release": "v2026.10.14-r1+78615f2",
-      "release_url": "https://github.com/nieaowei/gl-ui-momo/releases/tag/v2026.10.14-r1%2B78615f2",
-      "package": "gl-ui-momo-2026.10.14-78615f2-r1.apk",
-      "sha256": "45bc6f6e59e6c75a51af4e1b8e6b5fcdbcf1d6ab788b85d8a1459a223732345e",
+      "release": "v2026.10.14-r1+b480145",
+      "release_url": "https://github.com/nieaowei/gl-ui-momo/releases/tag/v2026.10.14-r1%2Bb480145",
+      "package": "gl-ui-momo-2026.10.14-b480145-r1.apk",
+      "sha256": "da9b2ae77e9fc5f5d9334a1833c231db60aa1888bfcc95323558009583b90694",
       "series": "25.12",
       "architectures": [
         "noarch"
       ],
-      "source_commit": "78615f2e1b78114090fe963174618ea23be1ebea"
+      "source_commit": "b480145f4760de7fc7cfa1964a2922a7651696d6"
     },
     {
       "repository": "nieaowei/gl-ui-avahi-daemon",
-      "release": "v0.9_rc5-r1+ea5dbd9",
-      "release_url": "https://github.com/nieaowei/gl-ui-avahi-daemon/releases/tag/v0.9_rc5-r1%2Bea5dbd9",
-      "package": "gl-ui-avahi-daemon-0.9_rc5-ea5dbd9-r1.apk",
-      "sha256": "98e53d078abe76afd35fafc93659fa10da7e1a3ea15d2e4477035b379178cf75",
+      "release": "v0.9_rc5-r1+8277335",
+      "release_url": "https://github.com/nieaowei/gl-ui-avahi-daemon/releases/tag/v0.9_rc5-r1%2B8277335",
+      "package": "gl-ui-avahi-daemon-0.9_rc5-8277335-r1.apk",
+      "sha256": "267020fcb925dc0d16b27fe8dbba218834a3780a16117245658b2ab681c50455",
       "series": "25.12",
       "architectures": [
         "noarch"
       ],
-      "source_commit": "ea5dbd9672c1e5b55524c4a069576590e9fdf892"
+      "source_commit": "8277335e5d78660cb5bedb7e451df7ab27a66f64"
     },
     {
       "repository": "nieaowei/udp-discovery-relay",
@@ -38,15 +38,15 @@
     },
     {
       "repository": "nieaowei/gl-ui-udp-discovery-relay",
-      "release": "v0.0.1-r1+5a8989d",
-      "release_url": "https://github.com/nieaowei/gl-ui-udp-discovery-relay/releases/tag/v0.0.1-r1%2B5a8989d",
-      "package": "gl-ui-udp-discovery-relay-0.0.1-5a8989d-r1.apk",
-      "sha256": "a9462b41f03780684a4246c0da3273dcbdab021f4a24334482cdb5440ea98c46",
+      "release": "v0.0.1-r1+1c733f0",
+      "release_url": "https://github.com/nieaowei/gl-ui-udp-discovery-relay/releases/tag/v0.0.1-r1%2B1c733f0",
+      "package": "gl-ui-udp-discovery-relay-0.0.1-1c733f0-r1.apk",
+      "sha256": "a1d59918e726275f463302891a250ce7df3c01ad4556052cba65ace186312561",
       "series": "25.12",
       "architectures": [
         "noarch"
       ],
-      "source_commit": "5a8989d0aeb0994e967d05b80bce5d39f4811b39"
+      "source_commit": "1c733f0dc10f2c394632b1b683c0e97bd149b995"
     }
   ]
 }
