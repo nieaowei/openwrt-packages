@@ -23,6 +23,30 @@
         "noarch"
       ],
       "source_commit": "ea5dbd9672c1e5b55524c4a069576590e9fdf892"
+    },
+    {
+      "repository": "nieaowei/udp-discovery-relay",
+      "release": "v0.0.1",
+      "release_url": "https://github.com/nieaowei/udp-discovery-relay/releases/tag/v0.0.1",
+      "package": "udp-discovery-relay-0.0.1-r1.apk",
+      "sha256": "4d3f92984ea87f87dfc7282b4253b38b1adb7e30424332ca731a4fc46f98f383",
+      "series": "25.12",
+      "architectures": [
+        "aarch64_cortex-a53"
+      ],
+      "source_commit": "main"
+    },
+    {
+      "repository": "nieaowei/gl-ui-udp-discovery-relay",
+      "release": "v0.0.1-r1+5a8989d",
+      "release_url": "https://github.com/nieaowei/gl-ui-udp-discovery-relay/releases/tag/v0.0.1-r1%2B5a8989d",
+      "package": "gl-ui-udp-discovery-relay-0.0.1-5a8989d-r1.apk",
+      "sha256": "a9462b41f03780684a4246c0da3273dcbdab021f4a24334482cdb5440ea98c46",
+      "series": "25.12",
+      "architectures": [
+        "noarch"
+      ],
+      "source_commit": "5a8989d0aeb0994e967d05b80bce5d39f4811b39"
     }
   ]
 }
